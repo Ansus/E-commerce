@@ -1,0 +1,31 @@
+
+% First we extract data from a csv file.
+
+<<setup, cache=FALSE, include=FALSE>>=
+library(knitr)
+library(kableExtra)
+library(statmod)
+library(tidyverse)
+library(MASS)
+library(funModeling)
+
+opts_chunk$set(results="asis", echo=F, cache=T)
+options(knitr.table.format = "latex")
+opts_knit$set(concordance = TRUE, self.contained=FALSE)
+@
+
+<<extract, cache=FALSE, include=FALSE>>=
+dat = read.csv("data.csv", header = TRUE)
+@
+
+Preliminary analysis show that the dataset contains \Sexpr{ncol(dat)} and \Sexpr{nrow(dat)} observations:
+<<preliminary, cache=FALSE,  results="asis" >>=
+df_status(dat, print_results = F) %>% kable(format= "latex" , booktabs=T,  align = "c", escape=F, linesep = "") %>%
+  kable_styling(latex_options = c( "hold_position")) %>% 
+  gsub("_", "-", .) #cant handle underscore
+@
+
+
+
+
+
