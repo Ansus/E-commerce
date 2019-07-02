@@ -1,0 +1,44 @@
+
+
+\subsection*{Unit Price and Quantity}
+
+Not only some items appear to be sold for free, two of them, described as "Adjust bad debt", also have a negative \textit{UnitPrice}. From the description they don't look like objects sold by the company, so we will remove them from the table. 
+
+Same argument for the rest of the invoices with a code starting with a letter, which have a negative quantity. As those quatities don't match with other positive quantities in the table (although the data might be incomplete) we can't conclude that these invoices are cancellations of orders. As they can't be considered sold items, we will remove those data too.
+
+Finally, we delete other two invoices marked as AMAZONFEE, the only positive among 34 invoices of the same kind, whose amount appears to compensate two invoices we removed in the previous step.
+\\
+
+
+<<newData, cache=TRUE, echo=F, fig.show='hold', out.width=".45\\linewidth", fig.align='center',  fig.pos="h!", strip.white=T>>=
+dat2= dat2 %>% filter(!grepl("A|B|C",InvoiceNo) 
+                      & !grepl("AMAZONFEE",StockCode))
+
+ggplot(dat2, aes(x="", y=UnitPrice)) +
+  geom_boxplot() +
+  theme(axis.title.x=element_blank(), axis.text=element_text(size=20), 
+        axis.title=element_text(size=20,face="bold"))
+
+dat2 %>% filter(UnitPrice<=25) %>% 
+  mutate(ifelse(UnitPrice>25, 25, UnitPrice)) %>% 
+  ggplot( aes(UnitPrice)) +
+    geom_histogram(binwidth = 1) +
+    theme(axis.text=element_text(size=20), 
+          axis.title=element_text(size=20,face="bold"))
+@
+
+<<summaryPrice>>=
+summary(dat2$UnitPrice) %>%  round(2) %>% 
+  as.matrix() %>% t() %>% 
+  kable(format = "latex", booktabs = TRUE)%>% 
+  kable_styling(row_label_position = 'lr')
+@
+
+
+As we can see, the boxplot of the remaining data is sqeezed near the $x$ axis, meaning that the company mainly sells low-price articles. In fact, as the table of quatiles shows, around $75\%$ of articles are sold for less than 4€.
+
+The histogram displays the detail of the distribution of the items sold for less than 25€. For a comparison, the last bin on the right represent the total number of items sold for 25€ or more.
+
+
+
+

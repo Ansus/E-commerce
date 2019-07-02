@@ -5,27 +5,50 @@
 library(knitr)
 library(kableExtra)
 library(statmod)
-library(tidyverse)
 library(MASS)
 library(funModeling)
 
-opts_chunk$set(results="asis", echo=F, cache=T)
+library(tidyverse)
+
+opts_chunk$set(results="asis", echo=FALSE, cache=FALSE)
 options(knitr.table.format = "latex")
 opts_knit$set(concordance = TRUE, self.contained=FALSE)
 @
 
-<<extract, cache=FALSE, include=FALSE>>=
+<<extract, echo=FALSE>>=
 dat = read.csv("data.csv", header = TRUE)
 @
 
-Preliminary analysis show that the dataset contains \Sexpr{ncol(dat)} and \Sexpr{nrow(dat)} observations:
+The dataset contains a list of invoices probably related to items sold by a company between the 1st December 2010 and the 9th Deceber 2011.
+Each invoice is uniquely identified by a \textit{InvoiceNo} and may contain different items, described by its \textit{StockCode} and Descripion, which are sold in differnt quantities and unit prices. Each client is identified by a code, the \textit{CustumerID}, and the country where the item was sold is displayed in the column \textit{Country}. Notice that in some cases one single client can place orders from different countries (e.g. client 12370 from Austria and Cyprus).
+
+
+<<preliminary-1>>=
+df= df_status(dat, print_results = F) %>% 
+  select(.,-c(6,7)) %>% as.data.frame()
+@
+
+Preliminary analysis show that the dataset contains \Sexpr{ncol(dat)} variables and \Sexpr{nrow(dat)} observations. A quick look to the dataset reveals that there are 2515 item sold for 0€, while almost the $25\%$ of the customers IDs are missing.
+
 <<preliminary, cache=FALSE,  results="asis" >>=
-df_status(dat, print_results = F) %>% kable(format= "latex" , booktabs=T,  align = "c", escape=F, linesep = "") %>%
+df %>% 
+  kable(format= "latex" , booktabs=T,  align = "c", escape=F, linesep = "") %>%
   kable_styling(latex_options = c( "hold_position")) %>% 
-  gsub("_", "-", .) #cant handle underscore
+  gsub("_", "-", .)
 @
 
 
+<<Datation, cache=TRUE>>=
+dat2= dat %>% 
+  mutate(InvoiceDateTime= as.POSIXct(strptime(InvoiceDate, format = "%m/%d/%Y %H:%M")),
+         Date= as.Date(InvoiceDate, format = "%m/%d/%Y %H:%M"),
+         WeekDay= weekdays(as.Date(InvoiceDate, format = "%m/%d/%Y %H:%M")),
+         Hour= as.integer(strftime(InvoiceDateTime, format="%H")),
+         Day= as.integer(strftime(InvoiceDateTime, format="%d")),
+         Month= as.integer(strftime(InvoiceDateTime, format="%m")),
+         Year= as.integer(strftime(InvoiceDateTime, format="%Y"))
+         )
+@
 
 
 

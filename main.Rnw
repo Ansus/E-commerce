@@ -1,0 +1,55 @@
+\documentclass[12pt,a4paper,oneside,italian]{book}
+
+
+\usepackage{booktabs}      %from here: kableExtra
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage[table]{xcolor}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage[normalem]{ulem} %until here: kableExtra
+
+%\usepackage{booktabs} %LarteLaTeX
+%\usepackage{caption}  %LarteLaTeX
+%\usepackage{graphicx} %LarteLaTeX
+%\usepackage{subfig}  %multiple figure
+%\captionsetup[table]{labelformat=empty}
+
+\usepackage{preambolo}
+
+\usepackage{lmodern,textcomp}
+
+
+\makeatother
+
+\begin{document}
+
+\chapter*{Analysis of e-commerce data}
+
+
+<<insertExtraction, child='dataExtraction.Rnw'>>=
+@
+
+
+<<insertUnitPrice, child='UnitPrice.Rnw'>>=
+@
+
+
+<<insertUnitPrice, child='TopProducts.Rnw'>>=
+@
+
+
+
+
+
+
+
+\end{document}
+
+
+
