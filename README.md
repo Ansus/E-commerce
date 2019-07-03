@@ -1,2 +1,2 @@
 # Repository-1-RStudio
-Trial RStudio
+Analysis of e-commerce data

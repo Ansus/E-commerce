@@ -32,6 +32,21 @@
 \chapter*{Analysis of e-commerce data}
 
 
+<<setup, cache=FALSE, include=FALSE>>=
+library(knitr)
+library(kableExtra)
+library(statmod)
+library(MASS)
+library(funModeling)
+
+library(tidyverse)
+
+opts_chunk$set(results="asis", echo=FALSE, cache=TRUE)
+options(knitr.table.format = "latex")
+opts_knit$set(concordance = TRUE, self.contained=FALSE)
+@
+
+
 <<insertExtraction, child='dataExtraction.Rnw'>>=
 @
 
@@ -44,9 +59,12 @@
 @
 
 
+<<insertTiming, child='Timing.Rnw'>>=
+@
 
 
-
+<<insertCountry, child='Country.Rnw'>>=
+@
 
 
 \end{document}
