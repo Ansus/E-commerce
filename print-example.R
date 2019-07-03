@@ -70,7 +70,8 @@ describe(dat2)
 fivenum(dat2$UnitPrice)
 
 rm(dat5)
-dat5= dat2 %>% transmute(UnitPrice= rank(UnitPrice, ties='first'), Quantity= rank(Quantity, ties='first'))
+dat5= dat2 %>% transmute(UnitPrice= rank(UnitPrice, ties='first'), 
+                         Quantity= rank(Quantity, ties='first'))
 dat5 %>% ggplot(.,aes(.$UnitPrice, .$Quantity)) + geom_point()
 
 
@@ -81,7 +82,7 @@ boxplot()
 
                                     
   
-df_status(dat6)
+df_status(dat2)
 
 dat7= dat6 %>% group_by(InvoiceDate) %>% 
   summarise(Value=sum(Quantity*UnitPrice))
@@ -106,6 +107,18 @@ tab_PriceQuant %>%
 dat2 %>% filter(UnitPrice<=25) %>% 
 ggplot( aes(UnitPrice)) +
   geom_histogram(binwidth = 1)
+
+prova=dat2 %>% 
+  group_by(WeekDay, Month) %>% 
+  summarise(Value= sum(Quantity*UnitPrice)) 
+prova %>% 
+  ggplot()
+
+
+
+
+
+  
 
 
 

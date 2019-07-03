@@ -1,57 +1,7 @@
-\documentclass[12pt,a4paper,oneside,italian]{book}\usepackage[]{graphicx}\usepackage[]{color}
-%% maxwidth is the original width if it is less than linewidth
-%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
-\makeatletter
-\def\maxwidth{ %
-  \ifdim\Gin@nat@width>\linewidth
-    \linewidth
-  \else
-    \Gin@nat@width
-  \fi
-}
-\makeatother
-
-\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
-\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
-\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
-\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
-\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
-\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
-\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
-\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
-\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
-\let\hlipl\hlkwb
-
-\usepackage{framed}
-\makeatletter
-\newenvironment{kframe}{%
- \def\at@end@of@kframe{}%
- \ifinner\ifhmode%
-  \def\at@end@of@kframe{\end{minipage}}%
-  \begin{minipage}{\columnwidth}%
- \fi\fi%
- \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
- \colorbox{shadecolor}{##1}\hskip-\fboxsep
-     % There is no \\@totalrightmargin, so:
-     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
- \MakeFramed {\advance\hsize-\width
-   \@totalleftmargin\z@ \linewidth\hsize
-   \@setminipage}}%
- {\par\unskip\endMakeFramed%
- \at@end@of@kframe}
-\makeatother
-
-\definecolor{shadecolor}{rgb}{.97, .97, .97}
-\definecolor{messagecolor}{rgb}{0, 0, 0}
-\definecolor{warningcolor}{rgb}{1, 0, 1}
-\definecolor{errorcolor}{rgb}{1, 0, 0}
-\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
-
-\usepackage{alltt}
+\documentclass[12pt,a4paper,oneside,italian]{book}\usepackage{knitr}
 
 
-\usepackage{booktabs}      %da qui: kableExtra
+\usepackage{booktabs}      %from here: kableExtra
 \usepackage{longtable}
 \usepackage{array}
 \usepackage{multirow}
@@ -62,44 +12,322 @@
 \usepackage{pdflscape}
 \usepackage{tabu}
 \usepackage{threeparttable}
-\usepackage[normalem]{ulem} %fino a qui:kableExtra
+\usepackage[normalem]{ulem} %until here: kableExtra
+
+%\usepackage{booktabs} %LarteLaTeX
+%\usepackage{caption}  %LarteLaTeX
+%\usepackage{graphicx} %LarteLaTeX
+%\usepackage{subfig}  %multiple figure
+%\captionsetup[table]{labelformat=empty}
 
 \usepackage{preambolo}
+
+\usepackage{lmodern,textcomp}
 
 
 \makeatother
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
-\section*{Analysis of e-commerce data}
-
-
-
-
-First we extract data from a csv file.
+\chapter*{Analysis of e-commerce data}
 
 
 
 
 
-Preliminary analysis show that the dataset contains 541909 observations:
+
+
+% First we extract data from a csv file.
+
+
+
+
+The dataset contains a list of invoices probably related to items sold by a company between the 1st December 2010 and the 9th December 2011.
+Each invoice is uniquely identified by a \textit{InvoiceNo} and may contain different items, described by its \textit{StockCode} and Descripion, which are sold in different quantities and unit prices. Each client is identified by a code, the \textit{CustumerID}, and the country where the item was sold is displayed in the column \textit{Country}. Notice that in some cases one single client can place orders from different countries (e.g. client 12370 from Austria and Cyprus).
+
+
+
+
+Preliminary analysis show that the dataset contains 8 variables and 541909 observations. A quick look to the dataset reveals that there are 2515 item sold for 0€, while almost the $25\%$ of the customers IDs are missing.
+
 \begin{table}[!h]
 \centering
-\begin{tabular}{ccccccccc}
+\begin{tabular}{cccccc}
 \toprule
-variable & q-zeros & p-zeros & q-na & p-na & q-inf & p-inf & type & unique\\
+variable & q-zeros & p-zeros & q-na & p-na & unique\\
 \midrule
-InvoiceNo & 0 & 0.00 & 0 & 0.00 & 0 & 0 & factor & 25900\\
-StockCode & 0 & 0.00 & 0 & 0.00 & 0 & 0 & factor & 4070\\
-Description & 0 & 0.00 & 0 & 0.00 & 0 & 0 & factor & 4224\\
-Quantity & 0 & 0.00 & 0 & 0.00 & 0 & 0 & integer & 722\\
-InvoiceDate & 0 & 0.00 & 0 & 0.00 & 0 & 0 & factor & 23260\\
-UnitPrice & 2515 & 0.46 & 0 & 0.00 & 0 & 0 & numeric & 1630\\
-CustomerID & 0 & 0.00 & 135080 & 24.93 & 0 & 0 & integer & 4372\\
-Country & 0 & 0.00 & 0 & 0.00 & 0 & 0 & factor & 38\\
+InvoiceNo & 0 & 0.00 & 0 & 0.00 & 25900\\
+StockCode & 0 & 0.00 & 0 & 0.00 & 4070\\
+Description & 0 & 0.00 & 0 & 0.00 & 4224\\
+Quantity & 0 & 0.00 & 0 & 0.00 & 722\\
+InvoiceDate & 0 & 0.00 & 0 & 0.00 & 23260\\
+UnitPrice & 2515 & 0.46 & 0 & 0.00 & 1630\\
+CustomerID & 0 & 0.00 & 135080 & 24.93 & 4372\\
+Country & 0 & 0.00 & 0 & 0.00 & 38\\
 \bottomrule
 \end{tabular}
 \end{table}
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection*{Unit Price and Quantity}
+
+Not only some items appear to be sold for free, two of them, described as "Adjust bad debt", also have a negative \textit{UnitPrice}. From the description they don't look like objects sold by the company, so we will remove them from the table. 
+
+Same argument for the invoices having a negative quantity. As those quantities don't match with other positive quantities in the table (although the data might be incomplete) we can't conclude that these invoices are cancellations of orders. As they can't be considered sold items, we will remove those data too.
+
+Finally, we delete other two invoices marked as AMAZONFEE, the only positive among 34 invoices of the same kind, whose amount appears to compensate two invoices we removed in the previous step.
+\\
+
+
+
+
+{\centering \includegraphics[width=.45\linewidth]{figure/newData-1} 
+\includegraphics[width=.45\linewidth]{figure/newData-2} 
+
+}
+
+
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{rrrrrr}
+\toprule
+Min. & 1st Qu. & Median & Mean & 3rd Qu. & Max.\\
+\midrule
+0 & 1.25 & 2.08 & 3.85 & 4.13 & 8142.75\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+
+
+As we can see, the boxplot of the remaining data is squeezed near the $x$ axis, meaning that the company mainly sells low-price articles. In fact, as the table of quartiles shows, around $75\%$ of articles are sold for 4€ or less (here we are assuming that the prices are all in Euros).
+
+
+
+
+
+The histogram displays the detail of the distribution of the items sold for less than 25€. For a comparison, the last bin on the right represent the total number of items sold for 25€ or more. Those objects represent the 4.2\% of the total earnings of the company.
+
+
+
+
+
+
+\subsection*{Top Products}
+
+
+The variable \textit{StockCode} is the one that uniquely identifies the items sold by the company. Here are the top 5 products sold by quantity and by value (i.e. quantity times unit price).
+
+\begin{table}[H]
+\centering
+\begin{tabular}{llrlr}
+\toprule
+StockCode & Description & Quantity\\
+\midrule
+22197 & SMALL POPCORN HOLDER & 56450\\
+84077 & WORLD WAR 2 GLIDERS ASSTD DESIGNS & 53847\\
+85099B & JUMBO BAG RED RETROSPOT & 47363\\
+85123A & WHITE HANGING HEART T-LIGHT HOLDER & 38830\\
+84879 & ASSORTED COLOUR BIRD ORNAMENT & 36221\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{llrlr}
+\toprule
+StockCode & Description & Value\\
+\midrule
+DOT & DOTCOM POSTAGE & 206245.48\\
+22423 & REGENCY CAKESTAND 3 TIER & 164762.19\\
+47566 & PARTY BUNTING & 98302.98\\
+85123A & WHITE HANGING HEART T-LIGHT HOLDER & 97894.50\\
+85099B & JUMBO BAG RED RETROSPOT & 92356.03\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+
+
+As we can see, the two lists are different, meaning that the most frequently sold items are not the most expensive (as we already saw).
+
+
+A quick look to the dataset reveals that there are products with the same description which differ only for the capitalisation of the letters appearing in the StockCode. This might suggest that those object are in fact the same.
+
+The following are the tables we would have obtained following this assumption.
+
+\begin{table}[!htb]
+    \begin{minipage}{.5\linewidth}
+      \centering \begin{table}[H]
+\centering
+\begin{tabular}{llrr}
+\toprule
+StockCode & Quantity\\
+\midrule
+22197 & 56450\\
+84077 & 53847\\
+85099B & 47363\\
+85123A & 39122\\
+84879 & 36221\\
+\bottomrule
+\end{tabular}
+\end{table} \end{minipage}%
+    \begin{minipage}{.5\linewidth}
+      \centering \begin{table}[H]
+\centering
+\begin{tabular}{llrr}
+\toprule
+StockCode & Value\\
+\midrule
+DOT & 206245.48\\
+22423 & 164762.19\\
+85123A & 99846.98\\
+47566 & 98302.98\\
+85099B & 92356.03\\
+\bottomrule
+\end{tabular}
+\end{table} \end{minipage}
+\end{table}
+
+As we can't exclude that the products associated to codes with a different capitalisation are in fact different, we will keep the codes separate.
+
+
+
+
+
+\subsection*{Timing}
+
+We investigate now the patterns of purchases in time.
+
+The first two plots show the value of the goods sold by the company in the considered period, with a daily and a monthly granularity respectively. As we can see, there is an increase in the sales in the last months of the year 2011, probably due to the approaching of the Christmas season.
+From the first plot we can notice that the aggregated value of sales of December 2010 is not as high as expected, probably because some data is missing, as suggested by the absence of data for the period 24th December-4th January.
+Conversely, in the second histogram we notice a lower level of sales for December 2011, this is due to the fact that the last date available is the 9th December.
+\\
+
+
+
+{\centering \includegraphics[width=.45\linewidth]{figure/timeSeries-1} 
+\includegraphics[width=.45\linewidth]{figure/timeSeries-2} 
+
+}
+
+
+
+
+
+We study now the pattern of sales during the week and during the day. This might help, for example, to know the habits of customers in order to implement a better advertising campaign.
+\\
+
+
+
+{\centering \includegraphics[width=.45\linewidth]{figure/Week-1} 
+\includegraphics[width=.45\linewidth]{figure/Week-2} 
+
+}
+
+
+
+
+
+
+The plot above shows the percentage of items sold in the different days of the week. As we can see, the major part of the sales occur during the central part of the week. We can notice that there are no sales during Saturdays, probably because the data we have are incomplete.
+
+A similar plot for the value of the items sold shows no significant difference when compared to the plot for quantities, suggesting that the average unit price for the items sold does not change during the week.
+\\
+We analyse now the trend of the sales during the day. The following plot portrays the percentage of items sold during the day for each day of the week. As we can notice, the sales occur between 6AM and 9PM (in fact "20" represent the period 20:00 - 20:59).
+Moreover, the period of time in which the sales take place is shorter for some days, most notably during the Sundays. This suggest that some data might be missing.
+
+The analysis reveals that the major part of the transactions occur in the late morning, with no noticeable difference between week days, except for Sundays and Mondays, when the peak of the sales arrives later.
+\\
+
+
+
+
+
+{\centering \includegraphics[width=\linewidth]{figure/Hours-1} 
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection*{Country}
+
+
+
+
+
+We analyse now the nationality of the customers.
+As we can see from the following plots, the major part of the purchases (by value) are made by customers in the UK. The high percentage (84.58\% of the total) suggest that the company might be British. 
+The second plot portrays the data without the UK, focusing on the rest of the countries.
+\\
+
+
+
+
+{\centering \includegraphics[width=0.6\linewidth]{figure/nationsVal-1} 
+\includegraphics[width=0.6\linewidth]{figure/nationsVal-2} 
+
+}
+
+
+
+
+
+The same plot for the number of items purchased gives similar results, with the UK reaching around the 83\% of the total. We only show here the plot without the data of the United Kingdom. As we can see, there are no major differences in the list of countries, meaning that the average unit prices of the items purchased doesn't vary a lot in the various nations.
+The only country that appears to be spending more money per item in the upper positions is the Netherlands. It could be worth investigating why.
+\\
+
+
+
+{\centering \includegraphics[width=0.6\linewidth]{figure/nationsQuant-1} 
+
+}
+
+
+
+
+
+Things are slightly different when it comes to number of invoices.
+The UK is again the first country, this time with the 91.55\% of the total.
+This time Germany and France become the first countries of the list, while the Netherlands slips back to the 5th position. This mean that German and French clients buy online frequently but their invoices often contain few items, while the opposite is true for the Dutch clients.
+Also this difference might be worth investigating in the future.
+\\
+
+
+
+
+{\centering \includegraphics[width=0.6\linewidth]{figure/nationsInvoices-1} 
+
+}
+
 
 
 

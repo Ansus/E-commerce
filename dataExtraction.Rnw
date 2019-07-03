@@ -1,36 +1,23 @@
 
 % First we extract data from a csv file.
 
-<<setup, cache=FALSE, include=FALSE>>=
-library(knitr)
-library(kableExtra)
-library(statmod)
-library(MASS)
-library(funModeling)
-
-library(tidyverse)
-
-opts_chunk$set(results="asis", echo=FALSE, cache=FALSE)
-options(knitr.table.format = "latex")
-opts_knit$set(concordance = TRUE, self.contained=FALSE)
-@
 
 <<extract, echo=FALSE>>=
 dat = read.csv("data.csv", header = TRUE)
 @
 
-The dataset contains a list of invoices probably related to items sold by a company between the 1st December 2010 and the 9th Deceber 2011.
-Each invoice is uniquely identified by a \textit{InvoiceNo} and may contain different items, described by its \textit{StockCode} and Descripion, which are sold in differnt quantities and unit prices. Each client is identified by a code, the \textit{CustumerID}, and the country where the item was sold is displayed in the column \textit{Country}. Notice that in some cases one single client can place orders from different countries (e.g. client 12370 from Austria and Cyprus).
+The dataset contains a list of invoices probably related to items sold by a company between the 1st December 2010 and the 9th December 2011.
+Each invoice is uniquely identified by a \textit{InvoiceNo} and may contain different items, described by its \textit{StockCode} and Descripion, which are sold in different quantities and unit prices. Each client is identified by a code, the \textit{CustumerID}, and the country where the item was sold is displayed in the column \textit{Country}. Notice that in some cases one single client can place orders from different countries (e.g. client 12370 from Austria and Cyprus).
 
 
 <<preliminary-1>>=
 df= df_status(dat, print_results = F) %>% 
-  select(.,-c(6,7)) %>% as.data.frame()
+  select(.,-c(6,7,8)) %>% as.data.frame()
 @
 
 Preliminary analysis show that the dataset contains \Sexpr{ncol(dat)} variables and \Sexpr{nrow(dat)} observations. A quick look to the dataset reveals that there are 2515 item sold for 0€, while almost the $25\%$ of the customers IDs are missing.
 
-<<preliminary, cache=FALSE,  results="asis" >>=
+<<preliminary,  results="asis" >>=
 df %>% 
   kable(format= "latex" , booktabs=T,  align = "c", escape=F, linesep = "") %>%
   kable_styling(latex_options = c( "hold_position")) %>% 
@@ -38,7 +25,7 @@ df %>%
 @
 
 
-<<Datation, cache=TRUE>>=
+<<Datation>>=
 dat2= dat %>% 
   mutate(InvoiceDateTime= as.POSIXct(strptime(InvoiceDate, format = "%m/%d/%Y %H:%M")),
          Date= as.Date(InvoiceDate, format = "%m/%d/%Y %H:%M"),

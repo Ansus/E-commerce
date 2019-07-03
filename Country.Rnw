@@ -1,0 +1,124 @@
+
+
+\subsection*{Country}
+
+
+<<nationsPrep>>=
+
+#Respectively Values, Quantity of items, Quantity of invoices
+nat_val= dat2 %>% group_by(Country) %>% 
+  summarise(Value= sum(Quantity*UnitPrice)) %>% 
+  arrange(desc(Value))
+nat_quant= dat2 %>% group_by(Country) %>% 
+  summarise(Quantity= sum(Quantity)) %>% 
+  arrange(desc(Quantity))
+nat_num= dat2 %>% group_by(Country) %>% 
+  summarise(Invoices= n()) %>% 
+  arrange(desc(Invoices))
+
+#Same without UK
+nat_val2= dat2 %>% filter(Country!="United Kingdom") %>% 
+  group_by(Country) %>% 
+  summarise(Value= sum(Quantity*UnitPrice)) 
+nat_quant2= dat2 %>% filter(Country!="United Kingdom") %>% 
+  group_by(Country) %>% 
+  summarise(Quantity= sum(Quantity)) 
+nat_num2= dat2 %>% filter(Country!="United Kingdom") %>% 
+  group_by(Country) %>% 
+  summarise(Invoices= n()) 
+
+#Percentages
+valUK= as.numeric(nat_val[1,2])/sum(nat_val[,2])
+quantUK= as.numeric(nat_quant[1,2])/sum(nat_quant[,2])
+numUK= as.numeric(nat_num[1,2])/sum(nat_num[,2])
+
+@
+
+
+We analyse now the nationality of the customers.
+As we can see from the following plots, the major part of the purchases (by value) are made by customers in the UK. The high percentage (\Sexpr{round(valUK*100,2)}\% of the total) suggest that the company might be British. 
+The second plot portrays the data without the UK, focusing on the rest of the countries.
+\\
+
+
+<<nationsVal, echo=F, fig.show='hold', out.width="0.6\\linewidth", fig.align='center',  fig.pos="h!", strip.white=T>>=
+
+ggplot(nat_val,aes(x=Country, y=Value))+
+    geom_bar(stat = "identity") +
+    coord_flip() + 
+    scale_x_discrete(limits = nat_val$Country[order(nat_val$Value)],
+                     expand=c(0,0)) +
+    theme(axis.text=element_text(size=10), 
+          axis.title=element_text(face="bold",size = 10)
+          ) 
+
+ggplot(nat_val2,aes(x=Country, y=Value))+
+    geom_bar(stat = "identity") +
+    coord_flip() + 
+    scale_x_discrete(limits = nat_val2$Country[order(nat_val2$Value)],
+                     expand=c(0,0)) +
+    theme(axis.text=element_text(size=10), 
+          axis.title=element_text(face="bold",size = 10)
+    )
+@
+
+
+The same plot for the number of items purchased gives similar results, with the UK reaching around the \Sexpr{round(quantUK,4)*100}\% of the total. We only show here the plot without the data of the United Kingdom. As we can see, there are no major differences in the list of countries, meaning that the average unit prices of the items purchased doesn't vary a lot in the various nations.
+The only country that appears to be spending more money per item in the upper positions is the Netherlands. It could be worth investigating why.
+\\
+
+<<nationsQuant, echo=F, fig.show='hold', out.width="0.6\\linewidth", fig.align='center',  fig.pos="h!", strip.white=T>>=
+
+# INCLUDING UK
+# ggplot(nat_quant,aes(x=Country, y=Quantity))+
+#     geom_bar(stat = "identity") +
+#     coord_flip() + 
+#     scale_x_discrete(limits = nat_quant$Country[order(nat_quant$Quantity)],
+#                      expand=c(0,0)) +
+#     theme(axis.text=element_text(size=10), 
+#           axis.title=element_text(face="bold",size = 10)
+#           ) 
+
+ggplot(nat_quant2,aes(x=Country, y=Quantity))+
+    geom_bar(stat = "identity") +
+    coord_flip() + 
+    scale_x_discrete(limits = nat_quant2$Country[order(nat_quant2$Quantity)],
+                     expand=c(0,0)) +
+    theme(axis.text=element_text(size=10), 
+          axis.title=element_text(face="bold",size = 10))
+@
+
+
+Things are slightly different when it comes to number of invoices.
+The UK is again the first country, this time with the \Sexpr{round(numUK*100,2)}\% of the total.
+This time Germany and France become the first countries of the list, while the Netherlands slips back to the 5th position. This mean that German and French clients buy online frequently but their invoices often contain few items, while the opposite is true for the Dutch clients.
+Also this difference might be worth investigating in the future.
+\\
+
+
+<<nationsInvoices, echo=F, fig.show='hold', out.width="0.6\\linewidth", fig.align='center',  fig.pos="h!", strip.white=T>>=
+
+# INCLUDING UK
+# ggplot(nat_num,aes(x=Country, y=Invoices))+
+#     geom_bar(stat = "identity") +
+#     coord_flip() + 
+#     scale_x_discrete(limits = nat_num$Country[order(nat_num$Invoices)],
+#                      expand=c(0,0)) +
+#     theme(axis.text=element_text(size=10), 
+#           axis.title=element_text(face="bold",size = 10)
+#           ) 
+
+ggplot(nat_num2,aes(x=Country, y=Invoices))+
+    geom_bar(stat = "identity") +
+    coord_flip() + 
+    scale_x_discrete(limits = nat_num2$Country[order(nat_num2$Invoices)],
+                     expand=c(0,0)) +
+    theme(axis.text=element_text(size=10), 
+          axis.title=element_text(face="bold",size = 10)
+    )
+@
+
+
+
+
+

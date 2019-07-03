@@ -1,0 +1,68 @@
+
+
+\subsection*{Top Products}
+
+
+The variable \textit{StockCode} is the one that uniquely identifies the items sold by the company. Here are the top 5 products sold by quantity and by value (i.e. quantity times unit price).
+
+<<top5>>=
+dat= dat %>% mutate(Value= Quantity*UnitPrice)
+
+t1= dat %>% group_by(StockCode) %>%
+  summarise(Description=first(Description), Quantity=sum(Quantity))
+t1= t1 %>% arrange(-Quantity) %>% .[1:5,]
+
+t2= dat %>% group_by(StockCode) %>% 
+  summarise(Description=first(Description), Value=sum(Value))
+t2= t2 %>% arrange(-Value) %>% .[1:5,]
+
+
+kable(t1, format = "latex", booktabs = TRUE) %>% 
+  kable_styling(row_label_position = 'llr')
+kable(t2, format = "latex", booktabs = TRUE) %>% 
+  kable_styling(row_label_position = 'llr')
+
+@
+
+
+As we can see, the two lists are different, meaning that the most frequently sold items are not the most expensive (as we already saw).
+
+
+A quick look to the dataset reveals that there are products with the same description which differ only for the capitalisation of the letters appearing in the StockCode. This might suggest that those object are in fact the same.
+
+The following are the tables we would have obtained following this assumption.
+
+<<top5_bis>>=
+t1= dat %>%
+  mutate(StockCode= toupper(StockCode)) %>% 
+  group_by(StockCode) %>%
+  summarise(Quantity=sum(Quantity))
+t1= t1 %>% arrange(-Quantity) %>% .[1:5,]
+
+t2= dat %>%
+  mutate(StockCode= toupper(StockCode)) %>% 
+  group_by(StockCode) %>% 
+  summarise(Value=sum(Value))
+t2= t2 %>% arrange(-Value) %>% .[1:5,]
+
+
+t1= kable(t1, format = "latex", booktabs = TRUE) %>% 
+  kable_styling(row_label_position = 'llr')
+t2= kable(t2, format = "latex", booktabs = TRUE) %>% 
+  kable_styling(row_label_position = 'llr')
+
+cat(c("\\begin{table}[!htb]
+    \\begin{minipage}{.5\\linewidth}
+      \\centering",
+        t1,
+    "\\end{minipage}%
+    \\begin{minipage}{.5\\linewidth}
+      \\centering",
+        t2,
+    "\\end{minipage}
+\\end{table}"
+))
+@
+
+As we can't exclude that the products associated to codes with a different capitalisation are in fact different, we will keep the codes separate.
+

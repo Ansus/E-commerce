@@ -1,0 +1,129 @@
+
+\subsection*{Timing}
+
+We investigate now the patterns of purchases in time.
+
+The first two plots show the value of the goods sold by the company in the considered period, with a daily and a monthly granularity respectively. As we can see, there is an increase in the sales in the last months of the year 2011, probably due to the approaching of the Christmas season.
+From the first plot we can notice that the aggregated value of sales of December 2010 is not as high as expected, probably because some data is missing, as suggested by the absence of data for the period 24th December-4th January.
+Conversely, in the second histogram we notice a lower level of sales for December 2011, this is due to the fact that the last date available is the 9th December.
+\\
+
+<<timeSeries, echo=F, fig.show='hold', out.width=".45\\linewidth", fig.align='center',  fig.pos="h!">>=
+
+dat2 %>% 
+  group_by(Date) %>% 
+  summarise(Value= sum(Quantity*UnitPrice)) %>% 
+  ggplot(aes(Date, Value)) +
+    geom_bar(stat = "identity") +
+    theme(axis.text=element_text(size=20), 
+          axis.title=element_text(size=20,face="bold"),
+          axis.text.x = element_text(angle = 65, hjust = 1)) #rotate labels
+
+dat2 %>% 
+  mutate(Month = format(InvoiceDateTime, "%Y-%m")) %>% 
+  group_by(Month, Year) %>% 
+  summarise(Value= sum(Quantity*UnitPrice)) %>% 
+  ggplot(aes(x=Month, Value)) +
+    geom_bar(stat = "identity") +
+    theme(axis.text=element_text(size=20), 
+          axis.title=element_text(size=20,face="bold"),
+          axis.text.x = element_text(angle = 65, hjust = 1)) #rotate labels
+@
+
+
+We study now the pattern of sales during the week and during the day. This might help, for example, to know the habits of customers in order to implement a better advertising campaign.
+\\
+
+<<Week, echo=F, fig.show='hold', out.width=".45\\linewidth", fig.align='center',  fig.pos="h!">>=
+
+dat2$WeekDay= dat2$WeekDay %>% 
+  substr(1,3) %>% 
+  factor(levels= c("Sun", "Mon", 
+    "Tue", "Wed", "Thu", "Fri", "Sat"))
+
+totQ= sum(dat2$Quantity)
+totV= sum(dat2$Quantity*dat2$UnitPrice)
+
+dat2 %>% 
+  group_by(WeekDay) %>% 
+  summarise(Quantity= sum(Quantity)/totQ) %>% 
+  ggplot(aes(WeekDay, Quantity)) +
+    geom_bar(stat = "identity") +
+    theme(axis.text=element_text(size=20), 
+          axis.title=element_text(size=20,face="bold"),
+          axis.text.x = element_text(angle = 65, hjust = 1)) #rotate labels
+
+
+dat2 %>% 
+  group_by(WeekDay) %>% 
+  summarise(Value= sum(Quantity*UnitPrice)/totV) %>% 
+  ggplot(aes(WeekDay, Value)) +
+    geom_bar(stat = "identity") +
+    theme(axis.text=element_text(size=20), 
+          axis.title=element_text(size=20,face="bold"),
+          axis.text.x = element_text(angle = 65, hjust = 1)) #rotate labels
+@
+
+
+
+The plot above shows the percentage of items sold in the different days of the week. As we can see, the major part of the sales occur during the central part of the week. We can notice that there are no sales during Saturdays, probably because the data we have are incomplete.
+
+A similar plot for the value of the items sold shows no significant difference when compared to the plot for quantities, suggesting that the average unit price for the items sold does not change during the week.
+\\
+We analyse now the trend of the sales during the day. The following plot portrays the percentage of items sold during the day for each day of the week. As we can notice, the sales occur between 6AM and 9PM (in fact "20" represent the period 20:00 - 20:59).
+Moreover, the period of time in which the sales take place is shorter for some days, most notably during the Sundays. This suggest that some data might be missing.
+
+The analysis reveals that the major part of the transactions occur in the late morning, with no noticeable difference between week days, except for Sundays and Mondays, when the peak of the sales arrives later.
+\\
+
+
+
+<<Hours, echo=F, fig.show='hold', out.width="\\linewidth", fig.align='center',  fig.pos="h!", strip.white=T>>=
+dat_hour= dat2 %>% 
+  group_by(Hour, WeekDay) %>% 
+  summarise(Quantity= sum(Quantity)/totQ)
+
+ratio.display <- 4/3
+ratio.values <- (max(dat_hour$Hour)-min(dat_hour$Hour))/(max(dat_hour$Quantity)-min(dat_hour$Quantity))
+
+ggplot(dat_hour, aes(Hour, Quantity, colour =WeekDay)) +
+    geom_line() +
+    theme(axis.text=element_text(size=10), 
+          axis.title=element_text(face="bold",size = 10),
+          legend.title = element_text(size = 10),
+          legend.text = element_text(size = 10)
+          ) +
+    coord_fixed(ratio.values / ratio.display) + 
+    scale_x_discrete(name ="Hours", limits=seq(6,20, by=1))
+
+
+# SALES PER HOUR AS PERCENTAGE OF WEEKDAYS
+#
+# tHourWeek= dat2 %>% 
+#   group_by(Hour, WeekDay) %>% 
+#   summarise(Quantity= sum(Quantity))
+# 
+# tWeek= tHourWeek %>% 
+#   group_by(WeekDay) %>% 
+#   summarise(Quantity= sum(Quantity))
+# 
+# tHourWeek_norm= inner_join(tHourWeek, tWeek, 
+#                    by = "WeekDay", copy = FALSE, suffix = c("", ".sum")) %>% 
+#                 mutate(Quant_norm=Quantity/Quantity.sum)
+# 
+# tHourWeek_norm %>% 
+#   ggplot(aes(Hour, Quant_norm, colour= WeekDay)) +
+#   geom_line() +
+#   theme(axis.text=element_text(size=20), 
+#         axis.title=element_text(size=20,face="bold"), 
+#         legend.title = element_text(size = 20),
+#         legend.text = element_text(size = 20))
+
+@
+
+
+
+
+
+
+
