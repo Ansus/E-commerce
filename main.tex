@@ -337,6 +337,106 @@ Also this difference might be worth investigating in the future.
 
 
 
+
+
+\subsection*{Orders}
+
+
+
+We analyse now the orders.
+As we can see each order is placed by a unique client.
+We consider now only the orders with a \textit{CustomerID} not missing.
+
+
+
+Here is the list of the top 5 clients who placed the biggest number of orders. As we can see, they placed more than one order per day.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{rrr}
+\toprule
+CustomerID & n\_orders & n\_dates\\
+\midrule
+12748 & 210 & 114\\
+14911 & 201 & 132\\
+17841 & 124 & 112\\
+13089 & 97 & 66\\
+14606 & 93 & 89\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+
+As we can see those customers are not the most valuable for the company. This is the list of the top 5 clients by total value of the orders.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{rrr}
+\toprule
+CustomerID & n\_orders & value\\
+\midrule
+14646 & 74 & 280206.0\\
+18102 & 60 & 259657.3\\
+17450 & 46 & 194550.8\\
+16446 & 2 & 168472.5\\
+14911 & 201 & 143825.1\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+
+Anyway, considering the shipping costs, it would make sense to consider more valuable a client who has on average an higher order value.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{rrrr}
+\toprule
+CustomerID & n\_orders & value & avg\_value\\
+\midrule
+16446 & 2 & 168472.50 & 84236.25\\
+12346 & 1 & 77183.60 & 77183.60\\
+15749 & 3 & 44534.30 & 14844.77\\
+15098 & 3 & 39916.50 & 13305.50\\
+12357 & 1 & 6207.67 & 6207.67\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+
+
+
+
+
+Some of this clients bought something from the company just once, so they might be considered `beginner' clients. This clients correspond to the 34.4\% of the total.
+
+Another way to classify clients might come from the last date of purchase. As of the 9th December 2011, the clients who didn't place any order in the previous 6 months (i.e. after the 9th of June) will be considered `dormant', implying that he might have a lower probability of buying again from the company. These clients are the 19.5\% of the total.
+
+
+
+{\centering \includegraphics[width=0.7\linewidth]{figure/clientsPie-1} 
+
+}
+
+
+
+
+
+Considering the pie-chart above, the company could for example consider strategies for retaining habitual clients who didn't buy anything in the previous months (marked as `At risk') or focus on custumers who just discovered the company (marked as `New') trying to make them loyal clients.
+
+
+
+
+
+
+
+
+
+
+
+
 \end{document}
 
 

@@ -38,7 +38,7 @@ library(kableExtra)
 library(statmod)
 library(MASS)
 library(funModeling)
-
+library(scales)
 library(tidyverse)
 
 opts_chunk$set(results="asis", echo=FALSE, cache=TRUE)
@@ -64,6 +64,10 @@ opts_knit$set(concordance = TRUE, self.contained=FALSE)
 
 
 <<insertCountry, child='Country.Rnw'>>=
+@
+
+
+<<insertCountry, child='Orders.Rnw'>>=
 @
 
 
